@@ -26,7 +26,7 @@ class GameOfLifeBg {
         this.setCanvasSize();
         this.clearCanvas();
         this.generateStartingGrid();
-        this.tick();
+        window.requestAnimationFrame(timestamp => this.tick(timestamp));
     }
 
     calculateSettings() {
@@ -61,7 +61,8 @@ class GameOfLifeBg {
     }
 
     clearCanvas() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = this.options.deadColor;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     generateStartingGrid() {
@@ -81,14 +82,22 @@ class GameOfLifeBg {
         this.grid = grid;
     }
 
-    tick() {
-        window.requestAnimationFrame(() => this.tick());
-        this.clearCanvas();
-        this.draw();
-        this.calculateNextGrid();
+    tick(timestamp) {
+        window.requestAnimationFrame(timestamp => this.tick(timestamp));
+        if (!this.lastTimestamp) this.lastTimestamp = -this.options.speed;
+        const delta = timestamp - this.lastTimestamp;
+
+        if (delta >= this.options.speed) {
+            this.lastTimestamp = timestamp;
+            this.clearCanvas();
+            this.draw();
+            this.calculateNextGrid();
+        }
     }
 
     draw() {
+        this.ctx.fillStyle = this.options.aliveColor;
+
         this.grid.forEach((row, rowIndex) => {
             const y = (rowIndex * this.options.cellSize) + this.gridSettings.offsetY;
 
@@ -112,5 +121,6 @@ GameOfLifeBg.defaultOptions = {
     element: null,
     cellSize: 10,
     aliveColor: '#000',
-    deadColor: '#fff'
+    deadColor: '#fff',
+    speed: 500
 };
