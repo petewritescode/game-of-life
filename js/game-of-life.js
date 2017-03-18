@@ -1,6 +1,6 @@
-class GameOfLifeBg {
+class GameOfLife {
     constructor(options) {
-        this.options = Object.assign({}, GameOfLifeBg.defaultOptions, options);
+        this.options = Object.assign({}, GameOfLife.defaultOptions, options);
         this.init();
     }
 
@@ -117,7 +117,7 @@ class GameOfLifeBg {
     }
 }
 
-GameOfLifeBg.defaultOptions = {
+GameOfLife.defaultOptions = {
     element: null,
     cellSize: 10,
     aliveColor: '#000',

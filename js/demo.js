@@ -1,3 +1,3 @@
-const game = new GameOfLifeBg({
+const game = new GameOfLife({
     element: document.getElementById('container')
 });
