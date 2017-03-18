@@ -1,12 +1,5 @@
 #container {
-    position: relative;
     width: 505px;
     height: 305px;
     border: 1px solid #000;
-}
-
-.game-of-life-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
 }
