@@ -11,7 +11,6 @@ class GameOfLife {
 
     createCanvas() {
         const canvas = document.createElement('canvas');
-        canvas.className = 'game-of-life-bg';
         this.options.element.appendChild(canvas);
 
         const ctx = canvas.getContext('2d');
