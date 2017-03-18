@@ -81,6 +81,50 @@ class GameOfLife {
         this.grid = grid;
     }
 
+    iterateGrid() {
+        const neighbours = [
+            { x: -1, y: -1 },
+            { x: 0, y: -1 },
+            { x: 1, y: -1 },
+            { x: -1, y: 0 },
+            { x: 1, y: 0 },
+            { x: -1, y: 1 },
+            { x: 0, y: 1 },
+            { x: 1, y: 1 }
+        ];
+
+        const newGrid = this.grid.map((row, rowIndex) => {
+            return row.map((cell, cellIndex) => {
+                const isAlive = cell;
+                const noAliveNeighbours = neighbours.reduce((prevNoAliveNeighbours, neighbour) => {
+                    return prevNoAliveNeighbours + this.getCellState(cellIndex + neighbour.x, rowIndex + neighbour.y);
+                }, 0);
+
+                if (isAlive) {
+                    if (noAliveNeighbours === 2 || noAliveNeighbours === 3) {
+                        return 1;
+                    }
+                } else {
+                    if (noAliveNeighbours === 3) {
+                        return 1;
+                    }
+                }
+
+                return 0;
+            });
+        });
+
+        this.grid = newGrid;
+    }
+
+    getCellState(x, y) {
+        if (this.grid[y] && this.grid[y][x]) {
+            return this.grid[y][x];
+        }
+
+        return 0;
+    }
+
     tick(timestamp) {
         window.requestAnimationFrame(timestamp => this.tick(timestamp));
         if (!this.lastTimestamp) this.lastTimestamp = -this.options.speed;
@@ -90,7 +134,7 @@ class GameOfLife {
             this.lastTimestamp = timestamp;
             this.clearCanvas();
             this.draw();
-            this.calculateNextGrid();
+            this.iterateGrid();
         }
     }
 
@@ -109,10 +153,6 @@ class GameOfLife {
                 }
             });
         });
-    }
-
-    calculateNextGrid() {
-        this.generateStartingGrid();
     }
 }
 
