@@ -96,19 +96,17 @@ class GameOfLife {
     }
 
     iterateGrid() {
-        const newGrid = this.grid.map((row, rowIndex) => {
-            return row.map((cell, cellIndex) => {
+        const newGrid = this.grid.map((row, y) => {
+            return row.map((cell, x) => {
                 const isAlive = cell;
-                const noAliveNeighbours = this.neighbourOffsets.reduce((prevNoAliveNeighbours, neighbour) => {
-                    return prevNoAliveNeighbours + this.getCellState(cellIndex + neighbour.x, rowIndex + neighbour.y);
-                }, 0);
+                const numAliveNeighours = this.getNumAliveNeighbours(x, y);
 
                 if (isAlive) {
-                    if (noAliveNeighbours === 2 || noAliveNeighbours === 3) {
+                    if (numAliveNeighours === 2 || numAliveNeighours === 3) {
                         return 1;
                     }
                 } else {
-                    if (noAliveNeighbours === 3) {
+                    if (numAliveNeighours === 3) {
                         return 1;
                     }
                 }
@@ -120,12 +118,29 @@ class GameOfLife {
         this.grid = newGrid;
     }
 
-    getCellState(x, y) {
-        if (this.grid[y] && this.grid[y][x]) {
-            return this.grid[y][x];
-        }
+    getNumAliveNeighbours(x, y) {
+        return this.neighbourOffsets.reduce((prevNum, neighbourOffset) => {
+            return prevNum + this.getCellState(x + neighbourOffset.x, y + neighbourOffset.y);
+        }, 0);
+    }
 
-        return 0;
+    getCellState(x, y) {
+        const wrappedCoordinates = this.getWrappedCoordinates(x, y);
+        return this.grid[wrappedCoordinates.y][wrappedCoordinates.x];
+    }
+
+    getWrappedCoordinates(x, y) {
+        const maxX = this.grid[0].length - 1;
+        const maxY = this.grid.length - 1;
+        x = x < 0 ? maxX : x;
+        x = x > maxX ? 0 : x;
+        y = y < 0 ? maxY : y;
+        y = y > maxY ? 0 : y;
+
+        return {
+            x,
+            y
+        }
     }
 
     tick(timestamp) {
