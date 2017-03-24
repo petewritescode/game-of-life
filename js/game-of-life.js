@@ -1,23 +1,37 @@
 class GameOfLife {
     constructor(options) {
         this.options = Object.assign({}, GameOfLife.defaultOptions, options);
+        this.canvas = null;
+        this.context = null;
+        this.gridSettings = {};
+        this.grid = [];
+        this.lastTimestamp = null;
+        this.neighbourOffsets = [
+            { x: -1, y: -1 },
+            { x: 0, y: -1 },
+            { x: 1, y: -1 },
+            { x: -1, y: 0 },
+            { x: 1, y: 0 },
+            { x: -1, y: 1 },
+            { x: 0, y: 1 },
+            { x: 1, y: 1 }
+        ];
+
         this.init();
     }
 
     init() {
-        this.createCanvas();
+        this.setupCanvas();
         this.setupUniverse();
     }
 
-    createCanvas() {
+    setupCanvas() {
         const canvas = document.createElement('canvas');
         this.options.element.appendChild(canvas);
-
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = this.options.aliveColor;
+        const context = canvas.getContext('2d');
 
         this.canvas = canvas;
-        this.ctx = ctx;
+        this.context = context;
     }
 
     setupUniverse() {
@@ -60,8 +74,8 @@ class GameOfLife {
     }
 
     clearCanvas() {
-        this.ctx.fillStyle = this.options.deadColor;
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.fillStyle = this.options.deadColor;
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     generateStartingGrid() {
@@ -82,21 +96,10 @@ class GameOfLife {
     }
 
     iterateGrid() {
-        const neighbours = [
-            { x: -1, y: -1 },
-            { x: 0, y: -1 },
-            { x: 1, y: -1 },
-            { x: -1, y: 0 },
-            { x: 1, y: 0 },
-            { x: -1, y: 1 },
-            { x: 0, y: 1 },
-            { x: 1, y: 1 }
-        ];
-
         const newGrid = this.grid.map((row, rowIndex) => {
             return row.map((cell, cellIndex) => {
                 const isAlive = cell;
-                const noAliveNeighbours = neighbours.reduce((prevNoAliveNeighbours, neighbour) => {
+                const noAliveNeighbours = this.neighbourOffsets.reduce((prevNoAliveNeighbours, neighbour) => {
                     return prevNoAliveNeighbours + this.getCellState(cellIndex + neighbour.x, rowIndex + neighbour.y);
                 }, 0);
 
@@ -139,7 +142,7 @@ class GameOfLife {
     }
 
     draw() {
-        this.ctx.fillStyle = this.options.aliveColor;
+        this.context.fillStyle = this.options.aliveColor;
 
         this.grid.forEach((row, rowIndex) => {
             const y = (rowIndex * this.options.cellSize) + this.gridSettings.offsetY;
@@ -149,7 +152,7 @@ class GameOfLife {
                 const isAlive = cell;
 
                 if (isAlive) {
-                    this.ctx.fillRect(x, y, this.options.cellSize, this.options.cellSize)
+                    this.context.fillRect(x, y, this.options.cellSize, this.options.cellSize)
                 }
             });
         });
@@ -161,5 +164,5 @@ GameOfLife.defaultOptions = {
     cellSize: 10,
     aliveColor: '#000',
     deadColor: '#fff',
-    speed: 500
+    speed: 200
 };
