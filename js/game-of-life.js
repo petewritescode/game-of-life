@@ -139,19 +139,6 @@ class GameOfLife {
         }
     }
 
-    tick(timestamp) {
-        window.requestAnimationFrame(timestamp => this.tick(timestamp));
-        if (!this.lastTimestamp) this.lastTimestamp = -this.options.speed;
-        const delta = timestamp - this.lastTimestamp;
-
-        if (delta >= this.options.speed) {
-            this.lastTimestamp = timestamp;
-            this.clearCanvas();
-            this.draw();
-            this.iterateGrid();
-        }
-    }
-
     draw() {
         this.context.fillStyle = this.options.aliveColor;
 
@@ -167,6 +154,19 @@ class GameOfLife {
                 }
             });
         });
+    }
+
+    tick(timestamp) {
+        window.requestAnimationFrame(timestamp => this.tick(timestamp));
+        if (!this.lastTimestamp) this.lastTimestamp = -this.options.speed;
+        const delta = timestamp - this.lastTimestamp;
+
+        if (delta >= this.options.speed) {
+            this.lastTimestamp = timestamp;
+            this.clearCanvas();
+            this.draw();
+            this.iterateGrid();
+        }
     }
 }
 
