@@ -94,20 +94,14 @@ class GameOfLife {
     iterateGrid() {
         const newGrid = this.grid.map((row, y) => {
             return row.map((cell, x) => {
-                const isAlive = cell;
-                const numAliveNeighours = this.getNumAliveNeighbours(x, y);
+                const isAlive = cell === 1;
+                const numAliveNeighbours = this.getNumAliveNeighbours(x, y);
 
                 if (isAlive) {
-                    if (numAliveNeighours === 2 || numAliveNeighours === 3) {
-                        return 1;
-                    }
+                    return (numAliveNeighbours === 2 || numAliveNeighbours === 3) ? 1 : 0;
                 } else {
-                    if (numAliveNeighours === 3) {
-                        return 1;
-                    }
+                    return numAliveNeighbours === 3 ? 1 : 0;
                 }
-
-                return 0;
             });
         });
 
