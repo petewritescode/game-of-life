@@ -3,6 +3,7 @@ class GameOfLife {
         this.options = Object.assign({}, GameOfLife.defaultOptions, options);
         this.canvas = null;
         this.context = null;
+        this.canvasSettings = {};
         this.gridSettings = {};
         this.grid = [];
         this.lastTimestamp = null;
