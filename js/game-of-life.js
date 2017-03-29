@@ -39,7 +39,7 @@ class GameOfLife {
         this.calculateSettings();
         this.setCanvasSize(this.canvasSettings.width, this.canvasSettings.height);
         this.clearCanvas();
-        this.generateStartingGrid();
+        this.randomiseGrid();
         window.requestAnimationFrame(timestamp => this.tick(timestamp));
     }
 
@@ -74,7 +74,7 @@ class GameOfLife {
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    generateStartingGrid() {
+    randomiseGrid() {
         let grid = [];
 
         for (let row = 0; row < this.gridSettings.rows; row++) {
