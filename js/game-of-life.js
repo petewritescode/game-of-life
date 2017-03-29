@@ -40,7 +40,7 @@ class GameOfLife {
         this.resizeCanvas();
         this.clearCanvas();
         this.randomiseGrid();
-        window.requestAnimationFrame(timestamp => this.tick(timestamp));
+        this.tick();
     }
 
     calculateSettings() {
@@ -152,10 +152,10 @@ class GameOfLife {
 
     tick(timestamp) {
         window.requestAnimationFrame(timestamp => this.tick(timestamp));
-        if (!this.lastTimestamp) this.lastTimestamp = -this.options.speed;
-        const delta = timestamp - this.lastTimestamp;
+        const delta = timestamp ? timestamp - this.lastTimestamp : null;
+        const shouldUpdate = !delta || delta >= this.options.speed;
 
-        if (delta >= this.options.speed) {
+        if (shouldUpdate) {
             this.lastTimestamp = timestamp;
             this.clearCanvas();
             this.draw();
