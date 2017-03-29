@@ -44,17 +44,12 @@ class GameOfLife {
     }
 
     calculateSettings() {
-        const {
-            element,
-            cellSize
-        } = this.options;
-
-        const canvasWidth = element.clientWidth;
-        const canvasHeight = element.clientHeight;
-        const gridCols = Math.floor(canvasWidth / cellSize);
-        const gridRows = Math.floor(canvasHeight / cellSize);
-        const gridOffsetX = Math.floor((canvasWidth - (gridCols * cellSize)) / 2);
-        const gridOffsetY = Math.floor((canvasHeight - (gridRows * cellSize)) / 2);
+        const canvasWidth = this.options.element.clientWidth;
+        const canvasHeight = this.options.element.clientHeight;
+        const gridCols = Math.floor(canvasWidth / this.options.cellSize);
+        const gridRows = Math.floor(canvasHeight / this.options.cellSize);
+        const gridOffsetX = Math.floor((canvasWidth - (gridCols * this.options.cellSize)) / 2);
+        const gridOffsetY = Math.floor((canvasHeight - (gridRows * this.options.cellSize)) / 2);
 
         this.canvasSettings = {
             width: canvasWidth,
