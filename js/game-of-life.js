@@ -37,7 +37,7 @@ class GameOfLife {
 
     setupUniverse() {
         this.calculateSettings();
-        this.setCanvasSize(this.canvasSettings.width, this.canvasSettings.height);
+        this.resizeCanvas();
         this.clearCanvas();
         this.randomiseGrid();
         window.requestAnimationFrame(timestamp => this.tick(timestamp));
@@ -64,9 +64,9 @@ class GameOfLife {
         };
     }
 
-    setCanvasSize(width, height) {
-        this.canvas.width = width;
-        this.canvas.height = height;
+    resizeCanvas() {
+        this.canvas.width = this.canvasSettings.width;
+        this.canvas.height = this.canvasSettings.height;
     }
 
     clearCanvas() {
