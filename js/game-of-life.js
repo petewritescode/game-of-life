@@ -3,7 +3,6 @@ class GameOfLife {
         this.options = Object.assign({}, GameOfLife.defaultOptions, options);
         this.canvas = null;
         this.context = null;
-        this.canvasSettings = {};
         this.gridSettings = {};
         this.grid = [];
         this.lastTimestamp = null;
@@ -27,34 +26,60 @@ class GameOfLife {
     }
 
     setupCanvas() {
-        const canvas = document.createElement('canvas');
-        this.options.element.appendChild(canvas);
-        const context = canvas.getContext('2d');
-
-        this.canvas = canvas;
-        this.context = context;
+        this.addCanvas();
+        this.storeCanvasContext();
+        this.resizeCanvas();
+        this.clearCanvas();
     }
 
     setupUniverse() {
-        this.calculateSettings();
-        this.resizeCanvas();
-        this.clearCanvas();
+        this.updateGridSettings();
         this.randomiseGrid();
         this.tick();
     }
 
-    calculateSettings() {
-        const canvasWidth = this.options.element.clientWidth;
-        const canvasHeight = this.options.element.clientHeight;
-        const gridCols = Math.floor(canvasWidth / this.options.cellSize);
-        const gridRows = Math.floor(canvasHeight / this.options.cellSize);
-        const gridOffsetX = Math.floor((canvasWidth - (gridCols * this.options.cellSize)) / 2);
-        const gridOffsetY = Math.floor((canvasHeight - (gridRows * this.options.cellSize)) / 2);
-
-        this.canvasSettings = {
-            width: canvasWidth,
-            height: canvasHeight
+    getElementSize() {
+        return {
+            width: this.options.element.clientWidth,
+            height: this.options.element.clientHeight
         };
+    }
+
+    addCanvas() {
+        const canvas = document.createElement('canvas');
+        this.options.element.appendChild(canvas);
+        this.canvas = canvas;
+    }
+
+    storeCanvasContext() {
+        this.context = this.canvas.getContext('2d');
+    }
+
+    resizeCanvas() {
+        const {
+            width,
+            height
+        } = this.getElementSize();
+
+        this.canvas.width = width;
+        this.canvas.height = height;
+    }
+
+    clearCanvas() {
+        this.context.fillStyle = this.options.deadColor;
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    updateGridSettings() {
+        const {
+            width,
+            height
+        } = this.getElementSize();
+
+        const gridCols = Math.floor(width / this.options.cellSize);
+        const gridRows = Math.floor(height / this.options.cellSize);
+        const gridOffsetX = Math.floor((width - (gridCols * this.options.cellSize)) / 2);
+        const gridOffsetY = Math.floor((height - (gridRows * this.options.cellSize)) / 2);
 
         this.gridSettings = {
             cols: gridCols,
@@ -62,16 +87,6 @@ class GameOfLife {
             offsetX: gridOffsetX,
             offsetY: gridOffsetY
         };
-    }
-
-    resizeCanvas() {
-        this.canvas.width = this.canvasSettings.width;
-        this.canvas.height = this.canvasSettings.height;
-    }
-
-    clearCanvas() {
-        this.context.fillStyle = this.options.deadColor;
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     randomiseGrid() {
@@ -152,7 +167,7 @@ class GameOfLife {
 
     tick(timestamp) {
         window.requestAnimationFrame(timestamp => this.tick(timestamp));
-        const delta = timestamp ? timestamp - this.lastTimestamp : null;
+        const delta = (timestamp && this.lastTimestamp) ? timestamp - this.lastTimestamp : null;
         const shouldUpdate = !delta || delta >= this.options.speed;
 
         if (shouldUpdate) {
