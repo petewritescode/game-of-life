@@ -168,7 +168,7 @@ class GameOfLife {
     tick(timestamp) {
         window.requestAnimationFrame(timestamp => this.tick(timestamp));
         const delta = (timestamp && this.lastTimestamp) ? timestamp - this.lastTimestamp : null;
-        const shouldUpdate = !delta || delta >= this.options.speed;
+        const shouldUpdate = !delta || delta >= this.options.interval;
 
         if (shouldUpdate) {
             this.lastTimestamp = timestamp;
@@ -184,5 +184,5 @@ GameOfLife.defaultOptions = {
     cellSize: 10,
     aliveColor: '#000',
     deadColor: '#fff',
-    speed: 200
+    interval: 200
 };
